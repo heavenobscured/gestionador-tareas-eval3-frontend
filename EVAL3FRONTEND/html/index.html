@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sistema de gestion tareas celine</title>
+    <link rel="stylesheet" href="estilos.css">
+  </head>
+  <body>
+
+    <!-- NAVBAR -->
+    <nav>
+      <a class="nav-brand" href="#"><img src="../img/gespenst.png" height="30"> el gestionador de tareas 3000!!</a>
+      <div class="nav-links">
+        <a href="#">inicio</a>
+        <a href="#">gestionador</a>
+        <div class="dropdown">
+          <a href="#">mas links!!! ▾</a>
+          <div class="dropdown-menu98">
+            <a href="agradecimientos.html">agradecimientos</a>
+            <a href="altar.html">altar</a>
+            <a href="contacto.html">contacto</a>
+          </div>
+        </div>
+        <a class="nav-disabled">no me toques!</a>
+      </div>
+    </nav>
+
+    <!-- VENTANA PRINCIPAL -->
+    <div class="ventana">
+      <div class="ventana-titlebar">
+        <span>📋 supergestionador de tareas!</span>
+        <div class="titlebar-btns">
+          <span title="minimizar">_</span>
+          <span title="maximizar">□</span>
+          <span title="cerrar">✕</span>
+        </div>
+      </div>
+
+      <div class="ventana-body">
+
+        <!-- bienvenida -->
+        <div class="bienvenida raised">
+          holaaaaaaaaaaaaa! bienvenido a mi página de gestión de tareas!
+          donde podras mantener una lista de tooooodas tus tareas y misiones en la semana!
+        </div>
+
+        <!-- inputs -->
+        <div class="input-area">
+          <input type="text" id="inputTarea" placeholder="que quieres hacer...">
+          <input type="date" id="dateInput">
+          <button class="btn98" id="addTaskBtn">agregar...</button>
+        </div>
+
+        <!-- lista -->
+        <div class="task-panel">
+          <ul id="taskList"></ul>
+        </div>
+
+        <!-- statusbar -->
+        <div class="statusbar">
+          <div class="status-item" id="statusMsg">0 tareas</div>
+          <div class="status-item" style="flex:0; min-width:80px; text-align:center;">listo</div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      const inputTarea = document.getElementById('inputTarea');
+      const dateInput  = document.getElementById('dateInput');
+      const addTaskBtn = document.getElementById('addTaskBtn');
+      const taskList   = document.getElementById('taskList');
+      const statusMsg  = document.getElementById('statusMsg');
+
+      function updateStatus() {
+        const total = taskList.querySelectorAll('li').length;
+        const done  = taskList.querySelectorAll('li.completada').length;
+        statusMsg.textContent = total + ' tarea' + (total !== 1 ? 's' : '') +
+          (done > 0 ? ' · ' + done + ' completada' + (done !== 1 ? 's' : '') : '');
+      }
+
+      addTaskBtn.addEventListener('click', addTask);
+      inputTarea.addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+
+      function addTask() {
+        const text = inputTarea.value.trim();
+        const date = dateInput.value;
+
+        if (text === '') {
+          alert('hola! escribe tu tarea!');
+          return;
+        }
+
+        const li = document.createElement('li');
+
+        const taskInfo = document.createElement('div');
+        taskInfo.className = 'task-info';
+
+        const taskText = document.createElement('span');
+        taskText.className = 'task-text';
+        taskText.textContent = text;           // ✅ sin innerHTML: seguro contra XSS
+
+        const taskDate = document.createElement('span');
+        taskDate.className = 'task-date';
+        taskDate.textContent = date ? 'fecha límite: ' + date : 'sin fecha';
+
+        taskInfo.appendChild(taskText);
+        taskInfo.appendChild(taskDate);
+
+        const btns = document.createElement('div');
+        btns.className = 'task-btns';
+
+        const completeBtn = document.createElement('button');
+        completeBtn.className = 'btn98-small';
+        completeBtn.textContent = 'listo!';
+        completeBtn.addEventListener('click', () => {
+          li.classList.toggle('completada');
+          updateStatus();
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn98-small';
+        deleteBtn.textContent = 'borrar!';
+        deleteBtn.addEventListener('click', () => {
+          li.remove();
+          updateStatus();
+        });
+
+        btns.appendChild(completeBtn);
+        btns.appendChild(deleteBtn);
+        li.appendChild(taskInfo);
+        li.appendChild(btns);
+        taskList.appendChild(li);
+
+        inputTarea.value = '';
+        dateInput.value  = '';
+        inputTarea.focus();
+        updateStatus();
+      }
+    </script>
+
+  </body>
+</html>

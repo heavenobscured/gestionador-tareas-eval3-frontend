@@ -1,0 +1,59 @@
+const inputTarea = document.getElementById('inputTarea');
+const dateInput = document.getElementById('dateInput');
+const addTaskBtn = document.getElementById('addTaskBtn');
+const taskList = document.getElementById('taskList');
+
+addTaskBtn.addEventListener('click', addTask);
+//tareas y manipulacion de DOM
+function addTask() {
+    const text = inputTarea.value.trim();
+    const date = dateInput.value;
+
+    if (text === '') {
+        alert('hola! escribe tu tarea!');
+        return;
+    }
+
+    const li = document.createElement('li');
+
+    //contenido de tarea con proteccion contra XSS al transformar codigo html a texto
+    const div = document.createElement('div');
+
+    const span = document.createElement('span');
+    const strong = document.createElement('strong');
+    strong.textContent = text;
+    span.appendChild('strong');
+
+    const small = document.createElement('small');
+    small.textContent = date ? 'fecha limite: ' + date : 'sin fecha';
+
+    div.appendChild(span);
+    div.appendChild(document.createElement('br'));
+    div.appendChild(small);
+
+    const acciones = document.createElement('div');
+    acciones.className = 'acciones';
+    
+    //logica de boton completar
+    const completeBtn = document.createElement('button');
+    completeBtn.className = 'btn-complete';
+    completeBtn.textContent = 'listo!'
+    completeBtn.addEventListener('click', () => {
+        li.classList.toggle('completed');
+    });
+    //logica de boton eliminar
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-delete';
+    deleteBtn.textContent = 'ah! me equivoque!';
+    deleteBtn.addEventListener('click', () => {
+        li.remove()
+    })
+    acciones.appendChild(completeBtn);
+    acciones.appendChild(deleteBtn);
+    li.appendChild(div);
+    li.appendChild(acciones);
+    //agregar a lista y limpiar input
+    taskList.appendChild(li);
+    inputTarea.value = '';
+    dateInput.value = '';
+}
